@@ -1,0 +1,23 @@
+{
+  "name": "hack-a-jag",
+  "version": "1.0.0",
+  "description": "'Hacks' for Jaguar cars",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/momo5502/hack-a-jag.git"
+  },
+  "author": "momo5502",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/momo5502/hack-a-jag/issues"
+  },
+  "homepage": "https://github.com/momo5502/hack-a-jag#readme",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "request": "^2.88.0"
+  }
+}
