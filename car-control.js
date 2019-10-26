@@ -8,6 +8,7 @@ class CarControl {
 
     connect() {
         console.log("Connecting to car...");
+        this.deviceId = '489a3776-b49b-4dd2-bb83-a8159a9bc69c'; // random
         this.vehicleId = "";
     }
 
@@ -64,8 +65,8 @@ class CarControl {
               'X-Originator-Type': 'app',
               'X-OS-Type': 'Android', // haHAA
               'X-OS-Version': '9.0',
-              'X-Client-Version': '1.0',
-              'Locale': 'en_US',
+              'X-Client-Version': '1.80.1',
+              'Locale': 'en-us',
               'Authorization': 'Bearer ' + this.token,
               'X-Device-Id:': this.deviceId,
               'x-telematicsprogramtype': 'jaguarprogram'
