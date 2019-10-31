@@ -2,9 +2,9 @@ const rp = require('request-promise');
 const mid = require('node-machine-id');
 const getUuid = require('uuid-by-string')
 
-IFAS_BASE_URL = 'https://ifas.prod-row.jlrmotor.com/ifas/jlr'
-IFOP_BASE_ULR = 'https://ifop.prod-row.jlrmotor.com/ifop/jlr'
-IF9_BASE_URL = 'https://if9.prod-row.jlrmotor.com/if9/jlr'
+const IFAS_BASE_URL = 'https://ifas.prod-row.jlrmotor.com/ifas/jlr';
+const IFOP_BASE_ULR = 'https://ifop.prod-row.jlrmotor.com/ifop/jlr';
+const IF9_BASE_URL = 'https://if9.prod-row.jlrmotor.com/if9/jlr';
 
 class InControl {
     async send(url, data, headers) {

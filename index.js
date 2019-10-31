@@ -33,34 +33,38 @@ const CommandHandler = require('./command-handler');
         });
     }
 
+    const getVehicle = (vehicle) => {
+        return vehicles[parseInt(vehicle)];
+    };
+
     commandHandler.add("start", (vehicle, pin) => {
         console.log("Starting Jaguar...".brightGreen);
-        vehicles[parseInt(vehicle)].start(pin);
+        getVehicle(vehicle).start(pin);
     });
 
     commandHandler.add("stop", (vehicle, pin) => {
         console.log("Stopping Jaguar...".brightGreen);
-        vehicles[parseInt(vehicle)].stop(pin);
+        getVehicle(vehicle).stop(pin);
     });
 
     commandHandler.add("lock", (vehicle, pin) => {
         console.log("Locking Jaguar...".brightGreen);
-        vehicles[parseInt(vehicle)].lock(pin);
+        getVehicle(vehicle).lock(pin);
     });
 
     commandHandler.add("unlock", (vehicle, pin) => {
         console.log("Unlocking Jaguar...".brightGreen);
-        vehicles[parseInt(vehicle)].unlock(pin);
+        getVehicle(vehicle).unlock(pin);
     });
 
     commandHandler.add("honkBlink", (vehicle, ) => {
         console.log("Unlocking Jaguar...".brightGreen);
-        vehicles[parseInt(vehicle)].honkBlink();
+        getVehicle(vehicle).honkBlink();
     });
 
     commandHandler.add("alarmOff", (vehicle) => {
         console.log("Unlocking Jaguar...".brightGreen);
-        vehicles[parseInt(vehicle)].alarmOff();
+        getVehicle(vehicle).alarmOff();
     });
 
     commandHandler.accept();
