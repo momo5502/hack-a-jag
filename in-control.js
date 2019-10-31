@@ -7,14 +7,9 @@ IFOP_BASE_ULR = 'https://ifop.prod-row.jlrmotor.com/ifop/jlr'
 IF9_BASE_URL = 'https://if9.prod-row.jlrmotor.com/if9/jlr'
 
 class InControl {
-
-    constructor() {
-
-    }
-
     async send(url, data, headers) {
         const requestHeaders = {
-            'Authorization': this.accessToken ? 'Bearer ' + this.accessToken : 'Basic YXM6YXNwYXNz',
+            'Authorization': this.accessToken ? `Bearer ${this.accessToken}` : 'Basic YXM6YXNwYXNz',
             'Content-Type': 'application/json',
             'X-Device-Id': this.deviceId
         };
@@ -60,11 +55,11 @@ class InControl {
         this.accessToken = result['access_token'];
         this.authorizationToken = result['authorization_token'];
         this.refreshToken = result['refresh_token'];
-        this.expiresIn = new Date(new Date().getTime() + parseInt(result['expires_in']));
+        this.expiresIn = new Date().getTime() + parseInt(result['expires_in']);
     }
 
     async registerDevice() {
-        await this.send(IFOP_BASE_ULR + '/users/' + this.email + '/clients', {
+        await this.send(IFOP_BASE_ULR + `/users/${this.email}/clients`, {
             'access_token': this.accessToken,
             'authorization_token': this.authorizationToken,
             'expires_in': '86400',
@@ -73,7 +68,7 @@ class InControl {
     }
 
     async loginUser() {
-        const result = await this.send(IF9_BASE_URL + '/users?loginName=' + this.email, undefined, {
+        const result = await this.send(IF9_BASE_URL + `/users?loginName=${this.email}`, undefined, {
             'Accept': 'application/vnd.wirelesscar.ngtp.if9.User-v3+json'
         });
 
@@ -94,11 +89,11 @@ class InControl {
         console.log('Performing authentication...');
         const user = await this.loginUser();
 
-        console.log('Logged in as ' + user.contact.firstName + ' ' + user.contact.lastName);
+        console.log(`Logged in as ${user.contact.firstName} ${user.contact.lastName}`);
     }
 
     async getVehicles() {
-        const result = await this.send(IF9_BASE_URL + '/users/' + this.userId + '/vehicles?primaryOnly=true');
+        const result = await this.send(IF9_BASE_URL + `/users/${this.userId}/vehicles?primaryOnly=true`);
 
         const vehicles = [];
 
@@ -113,9 +108,14 @@ class InControl {
 }
 
 class Vehicle {
-    constructor(inControl, vin) {
+    constructor(inControl, data) {
         this.inControl = inControl;
-        this.vin = vin;
+
+        const keys = Object.keys(data);
+        for (var i = 0; i < keys.length; ++i) {
+            const key = keys[i];
+            this[key] = data[key];
+        }
     }
 
     async lock(pin) {
@@ -163,7 +163,7 @@ class Vehicle {
     }
 
     async pin_authenticate(service, pin) {
-        return await this.send('/users/' + this.inControl.userId + '/authenticate', {
+        return await this.send(`/users/${this.inControl.userId}/authenticate`, {
             'serviceName': service,
             'pin': '' + pin
         }, {
@@ -172,7 +172,7 @@ class Vehicle {
     }
 
     async vin_authenticate(service) {
-        return await this.send('/users/' + this.inControl.userId + '/authenticate', {
+        return await this.send(`/users/${this.inControl.userId}/authenticate`, {
             'serviceName': service,
             'pin': this.vin.substring(this.vin.length - 4)
         }, {
@@ -181,7 +181,7 @@ class Vehicle {
     }
 
     async send(command, data, headers) {
-        return await this.inControl.send(IF9_BASE_URL + '/vehicles/' + this.vin + '/' + command, data, headers);
+        return await this.inControl.send(IF9_BASE_URL + `/vehicles/${this.vin}/${command}`, data, headers);
     }
 }
 

@@ -27,6 +27,10 @@ const CommandHandler = require('./command-handler');
     const vehicles = await inControl.getVehicles();
     if (vehicles.length == 0) {
         console.log('No vehicles registered!');
+    } else {
+        vehicles.forEach((vehicle, index) => {
+            console.log(`[${index}] ${vehicle.nickname}`);
+        });
     }
 
     commandHandler.add("start", (vehicle, pin) => {
