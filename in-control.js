@@ -118,6 +118,10 @@ class Vehicle {
         }
     }
 
+    async getPosition() {
+        return await this.send('position');
+    }
+
     async lock(pin) {
         const data = await this.pin_authenticate("RDL", pin);
         await this.send('lock', data, {
