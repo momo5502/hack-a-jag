@@ -26,9 +26,13 @@ class CommandHandler {
 
             const handler = this.commands[command];
             if (!handler) {
-                console.log(`Command ${command} not available.'`);
+                console.log(`Command ${command} not available.`);
             } else {
-                handler.call(command, args);
+                try {
+                    handler.call(command, args);
+                } catch (e) {
+                    console.log('Failed to execute command.');
+                }
             }
 
             this.accept();
@@ -54,7 +58,7 @@ class CommandHandler {
 
             rl.question('', line => {
                 rl.close();
-                
+
                 if (mute) {
                     console.log("");
                 }

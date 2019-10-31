@@ -93,20 +93,95 @@ class InControl {
 
         console.log('Performing authentication...');
         const user = await this.loginUser();
-        
+
         console.log('Logged in as ' + user.contact.firstName + ' ' + user.contact.lastName);
     }
 
     async getVehicles() {
         const result = await this.send(IF9_BASE_URL + '/users/' + this.userId + '/vehicles?primaryOnly=true');
-        
+
         const vehicles = [];
 
-        if(result.vehicles) {
-            console.log('TODO: Implement vehicle parsing!');
+        if (result.vehicles) {
+            result.vehicles.forEach(v => {
+                vehicles.push(new Vehicle(this, v.vin));
+            });
         }
 
         return vehicles;
+    }
+}
+
+class Vehicle {
+    constructor(inControl, vin) {
+        this.inControl = inControl;
+        this.vin = vin;
+    }
+
+    async lock(pin) {
+        const data = await this.pin_authenticate("RDL", pin);
+        await this.send('lock', data, {
+            'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json'
+        });
+    }
+
+    async unlock(pin) {
+        const data = await this.pin_authenticate("RDU", pin);
+        await this.send('unlock', data, {
+            'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json'
+        });
+    }
+
+    async start(pin) {
+        const data = await this.pin_authenticate("REON", pin);
+        await this.send('engineOn', data, {
+            'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json'
+        });
+    }
+
+    async stop(pin) {
+        const data = await this.pin_authenticate("REOFF", pin);
+        await this.send('engineOff', data, {
+            'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json'
+        });
+    }
+
+    async alarmOff() {
+        const data = await this.vin_authenticate("ALOFF");
+        await this.send('unlock', data, {
+            'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json',
+            'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v3+json; charset=utf-8'
+        });
+    }
+
+    async honkBlink() {
+        const data = await this.vin_authenticate("HBLF");
+        await this.send('honkBlink', data, {
+            'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json',
+            'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v3+json; charset=utf-8'
+        });
+    }
+
+    async pin_authenticate(service, pin) {
+        return await this.send('/users/' + this.inControl.userId + '/authenticate', {
+            'serviceName': service,
+            'pin': '' + pin
+        }, {
+            'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.AuthenticateRequest-v2+json; charset=utf-8'
+        });
+    }
+
+    async vin_authenticate(service) {
+        return await this.send('/users/' + this.inControl.userId + '/authenticate', {
+            'serviceName': service,
+            'pin': this.vin.substring(this.vin.length - 4)
+        }, {
+            'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.AuthenticateRequest-v2+json; charset=utf-8'
+        });
+    }
+
+    async send(command, data, headers) {
+        return await this.inControl.send(IF9_BASE_URL + '/vehicles/' + this.vin + '/' + command, data, headers);
     }
 }
 
