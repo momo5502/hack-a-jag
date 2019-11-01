@@ -71,5 +71,11 @@ const logger = require('./logger');
         getVehicle(vehicle).alarmOff();
     });
 
+    commandHandler.add("locate", async (vehicle) => {
+        logger.info("Locating Jaguar...");
+        const position = await getVehicle(vehicle).getPosition();
+        opn(`http://maps.google.com/maps?&z=14&mrt=yp&t=m&q=${position.lat}+${position.lon}`);
+    });
+
     commandHandler.accept();
 })();
