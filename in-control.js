@@ -1,6 +1,7 @@
 const rp = require('request-promise');
 const mid = require('node-machine-id');
-const getUuid = require('uuid-by-string')
+const getUuid = require('uuid-by-string');
+const logger = require('./logger');
 
 const IFAS_BASE_URL = 'https://ifas.prod-row.jlrmotor.com/ifas/jlr';
 const IFOP_BASE_ULR = 'https://ifop.prod-row.jlrmotor.com/ifop/jlr';
@@ -77,19 +78,30 @@ class InControl {
     }
 
     async connect(email, password) {
-        console.log('Connecting to Jaguar...');
-        await this.generateDeviceId();
+        logger.log('Connecting to Jaguar...');
 
-        console.log('Generating authentication tokens...');
-        await this.getTokens(email, password);
+        try {
+            logger.logNoBreak('[*] Generating device id... ');
+            await this.generateDeviceId();
+            logger.success('Success.');
 
-        console.log('Registering device...');
-        await this.registerDevice();
+            logger.logNoBreak('[*] Generating authentication tokens... ');
+            await this.getTokens(email, password);
+            logger.success('Success.');
 
-        console.log('Performing authentication...');
-        const user = await this.loginUser();
+            logger.logNoBreak('[*] Registering device... ');
+            await this.registerDevice();
+            logger.success('Success.');
 
-        console.log(`Logged in as ${user.contact.firstName} ${user.contact.lastName}`);
+            logger.logNoBreak('[*] Performing authentication... ');
+            const user = await this.loginUser();
+            logger.success('Success.');
+
+            logger.info(`\nLogged in as ${user.contact.firstName} ${user.contact.lastName}`);
+        } catch (e) {
+            logger.error('Failed.');
+            throw e;
+        }
     }
 
     async getVehicles() {

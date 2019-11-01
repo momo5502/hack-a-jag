@@ -43,6 +43,10 @@ class CommandHandler {
         return input.split(" ");
     }
 
+    close() {
+        this.rl.close();
+    }
+
     static readLine(mute) {
         return new Promise(resolve => {
             const rl = readline.createInterface({

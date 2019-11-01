@@ -1,16 +1,17 @@
 const colors = require('colors');
 const InControl = require('./in-control');
 const CommandHandler = require('./command-handler');
+const logger = require('./logger');
 
 (async function () {
-    console.log("##############".brightCyan);
-    console.log("#".brightCyan + " hack-a-jag " + "#".brightCyan);
-    console.log("##############\n".brightCyan);
+    logger.log("##############".cyan);
+    logger.log("#".cyan + " hack-a-jag " + "#".cyan);
+    logger.log("##############\n".cyan);
 
-    console.log('Enter your e-mail address:');
+    logger.log('Enter your e-mail address:');
     const email = await CommandHandler.readLine();
 
-    console.log('Enter your password:');
+    logger.log('Enter your password:');
     const password = await CommandHandler.readLine(true);
 
     const inControl = new InControl();
@@ -19,17 +20,20 @@ const CommandHandler = require('./command-handler');
     try {
         await inControl.connect(email, password);
     } catch (e) {
-        console.error("Failed to connect to Jaguar!".red);
-        //console.log(e);
+        logger.error("\nFailed to connect to Jaguar!");
+        commandHandler.close();
         return;
     }
 
     const vehicles = await inControl.getVehicles();
     if (vehicles.length == 0) {
-        console.log('No vehicles registered!');
+        logger.warn('No vehicles registered!');
+        commandHandler.close();
+        return;
     } else {
+        logger.warn(`${vehicles.length} vehicles registered:`);
         vehicles.forEach((vehicle, index) => {
-            console.log(`[${index}] ${vehicle.nickname}`);
+            logger.log(`[${index}] ${vehicle.nickname}`);
         });
     }
 
@@ -38,32 +42,32 @@ const CommandHandler = require('./command-handler');
     };
 
     commandHandler.add("start", (vehicle, pin) => {
-        console.log("Starting Jaguar...".brightGreen);
+        logger.info("Starting Jaguar...");
         getVehicle(vehicle).start(pin);
     });
 
     commandHandler.add("stop", (vehicle, pin) => {
-        console.log("Stopping Jaguar...".brightGreen);
+        logger.info("Stopping Jaguar...");
         getVehicle(vehicle).stop(pin);
     });
 
     commandHandler.add("lock", (vehicle, pin) => {
-        console.log("Locking Jaguar...".brightGreen);
+        logger.info("Locking Jaguar...");
         getVehicle(vehicle).lock(pin);
     });
 
     commandHandler.add("unlock", (vehicle, pin) => {
-        console.log("Unlocking Jaguar...".brightGreen);
+        logger.info("Unlocking Jaguar...");
         getVehicle(vehicle).unlock(pin);
     });
 
     commandHandler.add("honkBlink", (vehicle, ) => {
-        console.log("Activating alarm...".brightGreen);
+        logger.info("Activating alarm...");
         getVehicle(vehicle).honkBlink();
     });
 
     commandHandler.add("alarmOff", (vehicle) => {
-        console.log("Stopping alarm...".brightGreen);
+        logger.info("Stopping alarm...");
         getVehicle(vehicle).alarmOff();
     });
 
