@@ -58,12 +58,12 @@ const CommandHandler = require('./command-handler');
     });
 
     commandHandler.add("honkBlink", (vehicle, ) => {
-        console.log("Unlocking Jaguar...".brightGreen);
+        console.log("Activating alarm...".brightGreen);
         getVehicle(vehicle).honkBlink();
     });
 
     commandHandler.add("alarmOff", (vehicle) => {
-        console.log("Unlocking Jaguar...".brightGreen);
+        console.log("Stopping alarm...".brightGreen);
         getVehicle(vehicle).alarmOff();
     });
 
