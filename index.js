@@ -1,4 +1,5 @@
 const colors = require('colors');
+const opn = require('opn');
 const InControl = require('./in-control');
 const CommandHandler = require('./command-handler');
 const logger = require('./logger');
@@ -31,10 +32,12 @@ const logger = require('./logger');
         commandHandler.close();
         return;
     } else {
-        logger.warn(`${vehicles.length} vehicles registered:`);
-        vehicles.forEach((vehicle, index) => {
-            logger.log(`[${index}] ${vehicle.nickname}`);
-        });
+        logger.warn(`${vehicles.length} vehicle(s) registered:`);
+        for(var i = 0; i < vehicles.length; ++i) {
+            const vehicle = vehicles[i];
+            const attributes = await vehicle.getAttributes();
+            logger.log(`[${i}] ${attributes.nickname}`);
+        }
     }
 
     const getVehicle = (vehicle) => {
@@ -74,7 +77,7 @@ const logger = require('./logger');
     commandHandler.add("locate", async (vehicle) => {
         logger.info("Locating Jaguar...");
         const position = await getVehicle(vehicle).getPosition();
-        opn(`http://maps.google.com/maps?&z=14&mrt=yp&t=m&q=${position.lat}+${position.lon}`);
+        opn(`http://maps.google.com/maps?&z=14&mrt=yp&t=k&q=${position.position.latitude}+${position.position.longitude}`);
     });
 
     commandHandler.accept();

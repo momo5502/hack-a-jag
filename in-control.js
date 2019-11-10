@@ -24,16 +24,12 @@ class InControl {
         }
 
         const options = {
-            method: 'GET',
+            method: data ? 'POST' : 'GET',
             uri: url,
             headers: requestHeaders,
+            body: data,
             json: true
         };
-
-        if (data) {
-            options.method = 'POST';
-            options.body = data;
-        }
 
         return await rp(options);
     }
@@ -120,14 +116,15 @@ class InControl {
 }
 
 class Vehicle {
-    constructor(inControl, data) {
+    constructor(inControl, vin) {
         this.inControl = inControl;
+        this.vin = vin;
+    }
 
-        const keys = Object.keys(data);
-        for (var i = 0; i < keys.length; ++i) {
-            const key = keys[i];
-            this[key] = data[key];
-        }
+    async getAttributes() {
+        return await this.send('attributes', undefined, {
+            'Accept': 'application/vnd.ngtp.org.VehicleAttributes-v3+json'
+        });
     }
 
     async getPosition() {
