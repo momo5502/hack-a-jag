@@ -64,7 +64,7 @@ const logger = require('./logger');
         getVehicle(vehicle).unlock(pin);
     });
 
-    commandHandler.add("honkBlink", (vehicle, ) => {
+    commandHandler.add("honkBlink", (vehicle) => {
         logger.info("Activating alarm...");
         getVehicle(vehicle).honkBlink();
     });

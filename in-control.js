@@ -134,28 +134,32 @@ class Vehicle {
     async lock(pin) {
         const data = await this.pin_authenticate("RDL", pin);
         await this.send('lock', data, {
-            'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json'
+            'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json',
+            'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v3+json'
         });
     }
 
     async unlock(pin) {
         const data = await this.pin_authenticate("RDU", pin);
         await this.send('unlock', data, {
-            'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json'
+            'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json',
+            'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v3+json'
         });
     }
 
     async start(pin) {
         const data = await this.pin_authenticate("REON", pin);
         await this.send('engineOn', data, {
-            'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json'
+            'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json',
+            'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v3+json'
         });
     }
 
     async stop(pin) {
         const data = await this.pin_authenticate("REOFF", pin);
         await this.send('engineOff', data, {
-            'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v2+json'
+            'Accept': 'application/vnd.wirelesscar.ngtp.if9.ServiceStatus-v4+json',
+            'Content-Type': 'application/vnd.wirelesscar.ngtp.if9.StartServiceConfiguration-v3+json'
         });
     }
 

@@ -29,7 +29,7 @@ class CommandHandler {
                 console.log(`Command ${command} not available.`);
             } else {
                 try {
-                    handler.call(command, args);
+                    handler.apply(command, args);
                 } catch (e) {
                     console.log('Failed to execute command.');
                 }
